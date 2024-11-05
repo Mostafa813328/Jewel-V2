@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأنواع</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
+        /* Reset some default styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* Main container styling */
+        body {
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Main container for the entire card */
+        .container {
+            width: 400px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Header with image and title */
+        .header {
+            position: relative;
+            height: 150px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .header img {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        /* Sections title */
+        .section-title {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            font-size: 25px;
+            padding: 10px;
+            margin: 20px auto;
+            width: 80%;
+            border-radius: 8px;
+        }
+
+        /* Card grid layout */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 10px 20px 10px;
+        }
+
+        /* Individual card styling */
+        .card {
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .card p {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #333;
+            font-weight: bold;
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Header with main image and title -->
+    <div class="header">
+        المشروبات
+    </div>
+
+    <!-- Section title -->
+    <div class="section-title">انواع المشروبات</div>
+
+    <!-- Cards for each section -->
+    <div class="card-grid">
+        <!-- Appetizers Card -->
+         <a href="Hot-Drink.html">
+            <div class="card">
+                <img src="images/home/Drinks.png" alt="Appetizers">
+                <p>الساخنة</p>
+            </div>
+         </a>
+        
+
+        <!-- Main Dishes Card -->
+        <a href="ice-Drink.html">
+            <div class="card">
+                <img src="images/Drinks/Ice/Oreo.png" alt="Main Dishes">
+                <p>الباردة</p>
+            </div>
+        </a>
+        
+        
+    </div>
+</div>
+
+</body>
+</html>

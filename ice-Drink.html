@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<title>المشروبات الباردة</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap');
+    /* Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Cairo, sans-serif;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f4f4f4;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+    }
+
+    .menu-container {
+        width: 100%;
+        max-width: 590px;
+        background-color: #333;
+        color: white;
+        border-radius: 10px;
+        position: relative;
+    }
+
+    .menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        font-size: 30px;
+        font-weight: bold;
+        background-color: #3b3b3b;
+        color: #fff;
+        position: relative;
+    }
+
+    .menu-header .cart-icon {
+        position: absolute;
+        right: 20px;
+        cursor: pointer;
+        font-size: 40px;
+    }
+
+    .dish-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #555;
+        background-color: #444;
+        margin: 10px;
+        border-radius: 8px;
+    }
+
+    .dish-image img {
+        width: 115px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-left: 10px;
+    }
+
+    .dish-details {
+        flex: 1;
+        direction: rtl;
+    }
+
+    .dish-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #ffcc00;
+        margin-bottom: 5px;
+    }
+
+    .dish-price {
+        font-size: 18px;
+        font-weight: bold;
+        color: #ffcc00;
+        margin-bottom: 8px;
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        margin-top: 5px;
+    }
+
+    .quantity-button {
+        background-color: #ffcc00;
+        border: none;
+        color: #333;
+        font-size: 20px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .quantity-input {
+        width: 30px;
+        text-align: center;
+        border: none;
+        font-size: 20px;
+        margin: 0 5px;
+        background-color: #555;
+        color: white;
+    }
+
+    .confirm-button {
+    display: block;
+    width: 100%;
+    background-color: #ffcc00;
+    color: #333;
+    border: none;
+    padding: 15px;
+    font-size: 25px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.note {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    font-size: 20px;
+    color: #ffcc00;
+    margin-top: 5px;
+    text-align: right;
+}
+
+    /* Sidebar Styles */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        height: 100vh;
+        background-color: #333;
+        color: white;
+        transition: right 0.3s;
+        z-index: 1000;
+        padding: 20px;
+        box-shadow: -4px 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar.active {
+        right: 0;
+    }
+
+    .sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .close-icon {
+        cursor: pointer;
+        font-size: 24px;
+    }
+
+
+    .cart-icon{
+        font-size: 24px;
+    }
+
+    .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #555;
+    }
+
+    .cart-item-title {
+      font-size: 20px;
+      color: #ffcc00;
+  }
+
+  .cart-item-quantity,
+  .cart-item-price {
+      font-size: 20px;
+      color: #ddd;
+  }
+
+    .delete-btn {
+        color: #ff3333;
+        cursor: pointer;
+        font-size: 18px;
+        margin-left: 10px;
+    }
+
+    .execute-order {
+        background-color: #ffcc00;
+        color: #333;
+        border: none;
+        padding: 15px;
+        width: 100%;
+        font-size: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
+        border-radius: 5px;
+    }
+</style>
+</head>
+<body>
+
+<div class="menu-container">
+    <div class="menu-header">
+        <span>المشروبات الباردة</span>
+        <span class="cart-icon" onclick="toggleSidebar()">🛒</span>
+    </div>
+    
+    <!-- Dish 1 -->
+  <div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Pepsi-Small.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">كانز صغير</div>
+      <div class="dish-price">السعر : 17</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 3 -->
+  <div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Pepsi-320ml.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">كانز كبير</div>
+      <div class="dish-price">السعر : 20</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 4 -->
+  <div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Fyrouz.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">كانز فيروز او بريل</div>
+      <div class="dish-price">السعر : 22</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 6 -->
+  <div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Oreo.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">اوريو</div>
+      <div class="dish-price">السعر : 50</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 7 -->
+  <div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Mango.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">مانجو</div>
+      <div class="dish-price">السعر : 28</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+<!-- Dish 7 -->
+<div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Romaaan.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">رمان</div>
+      <div class="dish-price">السعر : 28</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 7 -->
+<div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Guafa.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">جوافة</div>
+      <div class="dish-price">السعر : 24</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 7 -->
+  <div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Guafa-Milk.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">جوافة باللبن</div>
+      <div class="dish-price">السعر : 34</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 7 -->
+<div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Orange.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">برتقال</div>
+      <div class="dish-price">السعر : 24</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 7 -->
+<div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Stropery.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">فراولة</div>
+      <div class="dish-price">السعر : 24</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 7 -->
+<div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Limon.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">ليمون</div>
+      <div class="dish-price">السعر : 15</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 7 -->
+<div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Limon-Munt.jpg">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">ليمون نعناع</div>
+      <div class="dish-price">السعر : 20</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dish 7 -->
+<div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Zbady.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">زبادي خلاط</div>
+      <div class="dish-price">السعر : 33</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+    <!-- Dish 7 -->
+<div class="dish-card">
+    <div class="dish-image">
+      <img src="images/Drinks/Ice/Zbady-Frout.png">
+    </div>
+    <div class="dish-details">
+      <div class="dish-title">زبادي خلاظ + نكهة (مانجو، فراولة...)</div>
+      <div class="dish-price">السعر : 43</div>
+      <div class="quantity-control">
+        <button class="quantity-button" onclick="decrement(this)">-</button>
+        <input type="text" class="quantity-input" value="0" readonly>
+        <button class="quantity-button" onclick="increment(this)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">ملاحظة هامة: يتم خصم 25% على العسكريين فقط ويتم اضافة 12% خدمة على السعر</div>
+  <button class="confirm-button" onclick="addToCart()">اضافة للفاتورة</button>
+</div>
+
+   
+</div>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        الطلبات
+        <span class="close-icon" onclick="toggleSidebar()">❌</span>
+    </div>
+    <div id="cartItemsContainer"></div>
+    <button class="execute-order" onclick="executeOrder()">تنفيذ الطلب</button>
+</div>
+
+<script>
+    // تحميل البيانات من localStorage عند تحميل الصفحة
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || {};
+
+    function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("active");
+    }
+
+    function increment(button) {
+        const input = button.previousElementSibling;
+        let quantity = parseInt(input.value);
+        input.value = quantity + 1;
+    }
+
+    function decrement(button) {
+        const input = button.nextElementSibling;
+        let quantity = parseInt(input.value);
+        if (quantity > 0) input.value = quantity - 1;
+    }
+
+    function addToCart() {
+        const dishCards = document.querySelectorAll('.dish-card');
+        const cartItemsContainer = document.getElementById('cartItemsContainer');
+
+        dishCards.forEach(card => {
+            const title = card.querySelector('.dish-title').textContent;
+            const price = card.querySelector('.dish-price').textContent.match(/\d+/)[0];
+            const quantity = card.querySelector('.quantity-input').value;
+
+            if (quantity > 0) {
+                if (cartItems[title]) {
+                    cartItems[title].quantity = parseInt(cartItems[title].quantity) + parseInt(quantity);
+                } else {
+                    cartItems[title] = { price, quantity };
+                }
+                renderCartItem(title);
+            }
+        });
+
+        // حفظ السلة في localStorage
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+        toggleSidebar();
+    }
+
+    function renderCartItem(title) {
+        const item = cartItems[title];
+        const cartItemsContainer = document.getElementById('cartItemsContainer');
+        
+        const existingItem = document.querySelector(`.cart-item[data-title="${title}"]`);
+        if (existingItem) {
+            existingItem.querySelector('.cart-item-quantity').textContent = `الكمية: ${item.quantity}`;
+        } else {
+            const itemHTML = `
+                <div class="cart-item" data-title="${title}">
+                    <div>
+                        <div class="cart-item-title">${title}</div>
+                        <div class="cart-item-quantity">الكمية: ${item.quantity}</div>
+                    </div>
+                    <div>
+                        <div class="cart-item-price">السعر: ${item.price} جنيه</div>
+                        <span class="delete-btn" onclick="removeFromCart('${title}')">🗑️</span>
+                    </div>
+                </div>
+            `;
+            cartItemsContainer.innerHTML += itemHTML;
+        }
+    }
+
+    function removeFromCart(title) {
+        // تأكد من وجود العنصر قبل حذفه
+        if (cartItems[title]) {
+            delete cartItems[title];  // إزالة العنصر من السلة
+            Swal.fire({
+            title: "عملية ناجحة",
+            text: "تم حذف المنتج من السلة",
+            icon: "success"
+          });
+            const cartItemElement = document.querySelector(`.cart-item[data-title="${title}"]`);
+            if (cartItemElement) {
+                cartItemElement.remove();  // إزالة العنصر من الـ DOM
+            }
+
+            // تحديث localStorage
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+          
+        }
+    }
+
+    function executeOrder() {
+        console.log("تم تنفيذ الطلب:", cartItems);
+        alert("تم تنفيذ الطلب بنجاح!");
+        toggleSidebar();
+    }
+
+    // عرض الطلبات المحفوظة عند تنقل جميع الصفحات
+    window.addEventListener('load', () => {
+        Object.keys(cartItems).forEach(title => renderCartItem(title));
+    });
+</script>
+
+</body>
+</html>
