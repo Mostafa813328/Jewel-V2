@@ -12,37 +12,83 @@
             <img src="jewel-logo.png" alt="Jewel Logo">
             <h1>مرحبا بك</h1>
         </div>
-        <div class="form">
+        
+        <div id="access-denied" style="display: none; color: red;">
+            عذرًا، يجب أن تكون في الموقع المحدد للوصول للتطبيق.
+        </div>
+
+        <div class="form" id="app-content" style="display: none;">
             <label for="name">اسم حضرتك :</label>
             <input type="text" id="name" placeholder="اكتب اسمك">
             
             <label for="table_number">رقم الطاولة :</label>
             <input type="number" id="table_number" placeholder="رقم الطاولة">
             
-            <label for="membership_photo">ارفاق صورة العضوية (للعسكريين فقط)</label>
+            <label for="membership_photo">قم بتصوير نفسك في المكان</label>
             <div class="file-upload" onclick="openCamera()">
                 <img src="SLR Camera.png" alt="Camera Icon">
             </div>
-             <!-- إضافة منطقة عرض الفيديو وزر التقاط الصورة -->
-        <div id="cameraStream" style="display: none;">
-            <video id="video" autoplay style="width: 300px"></video>
-            <button onclick="capturePhoto()" style="margin-bottom: 15px;">التقاط الصورة</button>
-            <br>
-            <button onclick="stopCamera()" style="margin-bottom: 15px;">إغلاق الكاميرا</button>
-        </div>
 
-        <!-- إضافة منطقة لعرض الصورة الملتقطة -->
-        <div id="photoPreview" style="display: none;">
-            <h3>الصورة الملتقطة:</h3>
-            <img id="capturedImage" src="" alt="Captured Photo" style="width: 300px">
-        </div>
-        
+            <!-- إضافة منطقة عرض الفيديو وزر التقاط الصورة -->
+            <div id="cameraStream" style="display: none;">
+                <video id="video" autoplay style="width: 500px"></video>
+                <button onclick="capturePhoto()" style="margin-bottom: 15px;">التقاط الصورة</button>
+                <br>
+                <button onclick="stopCamera()" style="margin-bottom: 15px;">إغلاق الكاميرا</button>
+            </div>
+
+            <!-- إضافة منطقة لعرض الصورة الملتقطة -->
+            <div id="photoPreview" style="display: none;">
+                <h3>الصورة الملتقطة:</h3>
+                <img id="capturedImage" src="" alt="Captured Photo" style="width: 500px">
+            </div>
+            
             <button><a href="HomePage.html">تسجيل</a></button>
         </div>
-
-       
     </div>
     
     <script src="registration.js"></script>
+    <script>
+        // إحداثيات الموقع المحدد
+        const allowedLatitude = 30.0864916; // خط العرض للموقع
+        const allowedLongitude = 31.2090825; // خط الطول للموقع
+        const allowedRadius = 10; // نصف القطر بالأمتار (مثال 5 كيلومترات)
+
+        // التحقق مما إذا كان المستخدم داخل النطاق
+        function isWithinRadius(userLat, userLon, targetLat, targetLon, radius) {
+            const R = 6371e3; // نصف قطر الأرض بالمتر
+            const φ1 = userLat * Math.PI/180;
+            const φ2 = targetLat * Math.PI/180;
+            const Δφ = (targetLat - userLat) * Math.PI/180;
+            const Δλ = (targetLon - userLon) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            const distance = R * c;
+            return distance <= radius;
+        }
+
+        // طلب إذن الموقع والتحقق
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
+
+                if (isWithinRadius(userLat, userLon, allowedLatitude, allowedLongitude, allowedRadius)) {
+                    document.getElementById("app-content").style.display = "block";
+                } else {
+                    document.getElementById("access-denied").style.display = "block";
+                }
+            },
+            (error) => {
+                alert("لا يمكن الوصول إلى موقعك. الرجاء السماح بالموقع أو المحاولة مرة أخرى.");
+            }
+        );
+
+       
+    </script>
 </body>
 </html>
